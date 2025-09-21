@@ -68,10 +68,10 @@ def recommend(movie):
 st.header('🎬 Movie Recommender System')
 
 # ✅ Load compressed pickle files
-with gzip.open('movie_list_compressed.pkl', 'rb') as f:
+with gzip.open('movie_list_compressed_small.pkl', 'rb') as f:
     movies = pickle.load(f)
 
-with gzip.open('similarity_compressed.pkl', 'rb') as f:
+with gzip.open('similarity_compressed_small.pkl', 'rb') as f:
     similarity = pickle.load(f)
 
 movie_list = movies['title'].values
