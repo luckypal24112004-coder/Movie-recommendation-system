@@ -3,44 +3,46 @@ import gzip
 import streamlit as st
 import requests
 import os
-import time
 
 # 🔑 Your TMDB API Key
 API_KEY = "ea9637703f4a4f244fad23262bc7c62d"
 
-# 📂 Folder to store cached posters
+# 📂 Folder to store cached posters (ephemeral on Render, persistent locally)
 CACHE_DIR = "posters"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-def fetch_poster(movie_id, retries=3):
-    """Fetch poster from TMDB, retry if fails, cache locally, fallback to placeholder."""
+@st.cache_data
+def fetch_poster(movie_id):
+    """Fetch poster from TMDB, cache locally + in Streamlit, fallback to placeholder."""
     local_path = os.path.join(CACHE_DIR, f"{movie_id}.jpg")
 
-    # ✅ Load from cache if already exists
+    # ✅ Use cached local file if exists
     if os.path.exists(local_path):
         return local_path
 
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-    headers = {"User-Agent": "Mozilla/5.0"}
+    try:
+        # 🎬 Get movie details from TMDB
+        url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        data = response.json()
 
-    for attempt in range(retries):
-        try:
-            response = requests.get(url, headers=headers, timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            poster_path = data.get("poster_path")
-            if poster_path:
-                full_url = "https://image.tmdb.org/t/p/w500/" + poster_path
-                img_data = requests.get(full_url, headers=headers, timeout=10).content
-                with open(local_path, "wb") as f:
-                    f.write(img_data)
-                return local_path
-        except Exception:
-            time.sleep(0.5)
-            continue
+        # 📸 Get poster path
+        poster_path = data.get("poster_path")
+        if poster_path:
+            full_url = "https://image.tmdb.org/t/p/w500/" + poster_path
+            img_data = requests.get(full_url, headers=headers, timeout=10).content
 
-    # ❌ Fallback if all retries fail
-    st.warning(f"Poster unavailable for movie ID {movie_id}, using placeholder.")
+            # 💾 Save locally (works locally, ephemeral on Render)
+            with open(local_path, "wb") as f:
+                f.write(img_data)
+
+            return local_path
+    except Exception:
+        pass
+
+    # ❌ If everything fails → return placeholder
     return "https://via.placeholder.com/500x750?text=No+Poster"
 
 def recommend(movie):
