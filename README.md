@@ -8,7 +8,7 @@ This project is an AI-powered **Movie Recommendation System** that suggests pers
 
 ## 📌 Approach  
 - **Data Processing**  
-  - Loaded and cleaned the movie dataset (~500+ movies)  
+  - Loaded and cleaned the movie dataset (~4000+ movies)  
   - Created feature matrices from metadata (genres, keywords, cast, etc.)  
   - Computed similarity scores between movies  
 
