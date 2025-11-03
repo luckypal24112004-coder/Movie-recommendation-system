@@ -1,6 +1,6 @@
 # 🎬 Intelligent Movie Recommendation System  
 
-🌐 **Live Demo**: [Try it here](https://movie-recommendation-system-tn87.onrender.com)  
+🌐 **Live Demo(may take 30 to 60 seconds due to free hosting)**: [Try it here](https://movie-recommendation-system-tn87.onrender.com)  
 
 This project is an AI-powered **Movie Recommendation System** that suggests personalized movies based on user-selected titles. It leverages Python, Pandas, Pickle, and similarity-based algorithms to deliver accurate recommendations with a user-friendly interface.
 
