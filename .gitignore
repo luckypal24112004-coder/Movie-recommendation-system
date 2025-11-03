@@ -1,1 +1,5 @@
 .venv
+.ipynb_checkpoints
+.idea
+posters
+
